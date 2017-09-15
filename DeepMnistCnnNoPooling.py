@@ -62,11 +62,11 @@ printShape(conv3)
 
 # flatten conv3 to connect to the fully connected layer next
 conv3_flat = tf.reshape(conv3, [-1, 11 * 11 * 10]) # 11 x 11 x 10 => 1210
-print(conv3_flat.shape)
+printShape(conv3_flat)
 
 # Fully Connected Layer 1
 fully_connected1 = getFullyConnectedLayer(conv3_flat, 11 * 11 * 10, 100) # 1210 => 100
-print(fully_connected1.shape)
+printShape(fully_connected1)
 
 # used for dropout later, hold a ref so we can remove it during testing
 keep_prob = tf.placeholder(tf.float32)
@@ -75,7 +75,7 @@ print("Dropout")
 
 # fully connected layer 2
 fully_connected2 = getFullyConnectedLayer(fully_connected_drop1, 100, 10) # 1210 => 100
-print(fully_connected2.shape)
+printShape(fully_connected2)
 
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=yCorrectLabels, logits=fully_connected2))
 
