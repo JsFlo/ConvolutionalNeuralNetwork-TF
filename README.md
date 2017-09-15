@@ -36,3 +36,9 @@ Another **disadvantage** to not using **zero-padding** is that
 the edges at each convolutional don't get **as many neurons looking** at them
 compared to a traditional architecture with **zero-padding** at every conv layer 
 to keep the volume the same( usually reduced by max-pooling).
+
+## Traditional CNN
+A more **traditional CNN** that relies on **2x2 pooling** to **reduce dimensions**.
+The **convolutions don't** reshape the **dimensions** because it **zero-pads**.
+
+<img src="conv_example.png" width="600">
