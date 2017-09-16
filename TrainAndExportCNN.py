@@ -4,6 +4,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 EXPORT_DIR = './model'
 TRAIN_STEPS = 20000
 PRINT_TRAIN_FREQ = 250
+MODEL_NAME = 'model_graph.pb'
 
 
 def weight_variable(shape):
@@ -65,6 +66,42 @@ def printAccuracy(accuracy, step, inputPlaceholder, correctLabelPlaceholder, inp
 
 def printShape(tensor):
     print(tensor.shape)
+
+
+def exportGraph(g, WC1, BC1, WC2, BC2, WC3, BC3, WF1, BF1, W_OUT, B_OUT):
+    with g.as_default():
+        x_2 = tf.placeholder("float", shape=[None, 784], name="input")
+
+        WC1 = tf.constant(WC1, name="WC1")
+        BC1 = tf.constant(BC1, name="BC1")
+        x_image2 = tf.reshape(x_2, [-1, 28, 28, 1])
+        CONV1 = getConvLayer(x_image2, WC1, BC1)
+
+        WC2 = tf.constant(WC2, name="WC2")
+        BC2 = tf.constant(BC2, name="BC2")
+        CONV2 = getConvLayer(CONV1, WC2, BC2)
+
+        WC3 = tf.constant(WC3, name="WC3")
+        BC3 = tf.constant(BC3, name="BC3")
+        CONV3 = getConvLayer(CONV2, WC3, BC3)
+
+        CONV3_FLAT = tf.reshape(CONV3, [-1, 11 * 11 * 10])
+
+        WF1 = tf.constant(WF1, name="WF1")
+        BF1 = tf.constant(BF1, name="BF1")
+        FC1 = getFullyConnectedLayer(CONV3_FLAT, WF1, BF1)
+
+        W_OUT = tf.constant(W_OUT, name="W_OUT")
+        B_OUT = tf.constant(B_OUT, name="B_OUT")
+
+        OUTPUT = tf.nn.softmax(tf.matmul(FC1, W_OUT) + B_OUT, name="output")
+
+        sess = tf.Session()
+        init = tf.initialize_all_variables()
+        sess.run(init)
+
+        graph_def = g.as_graph_def()
+        tf.train.write_graph(graph_def, EXPORT_DIR, MODEL_NAME, as_text=False)
 
 
 # Load the data from the mnist
@@ -142,36 +179,4 @@ with tf.Session() as sess:
 
 # Create new graph for exporting
 g = tf.Graph()
-with g.as_default():
-    x_2 = tf.placeholder("float", shape=[None, 784], name="input")
-
-    WC1 = tf.constant(WC1, name="WC1")
-    BC1 = tf.constant(BC1, name="BC1")
-    x_image = tf.reshape(x_2, [-1, 28, 28, 1])
-    CONV1 = getConvLayer(x_image, WC1, BC1)
-
-    WC2 = tf.constant(WC2, name="WC2")
-    BC2 = tf.constant(BC2, name="BC2")
-    CONV2 = getConvLayer(conv1, WC2, BC2)
-
-    WC3 = tf.constant(WC3, name="WC3")
-    BC3 = tf.constant(BC3, name="BC3")
-    CONV3 = getConvLayer(conv1, WC3, BC3)
-
-    CONV3_FLAT = tf.reshape(CONV3, [-1, 11 * 11 * 10])
-
-    WF1 = tf.constant(WF1, name="WF1")
-    BF1 = tf.constant(BF1, name="BF1")
-    FC1 = getFullyConnectedLayer(CONV3_FLAT, WF1, BF1)
-
-    W_OUT = tf.constant(W_OUT, name="W_OUT")
-    B_OUT = tf.constant(B_OUT, name="B_OUT")
-
-    OUTPUT = tf.nn.softmax(tf.matmul(FC1, W_OUT) + B_OUT, name="output")
-
-    sess = tf.Session()
-    init = tf.initialize_all_variables()
-    sess.run(init)
-
-    graph_def = g.as_graph_def()
-    tf.train.write_graph(graph_def, EXPORT_DIR, 'model_graph.pb', as_text=False)
+exportGraph(g, WC1, BC1, WC2, BC2, WC3, BC3, WF1, BF1, W_OUT, B_OUT)
