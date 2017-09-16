@@ -71,7 +71,7 @@ def printShape(tensor):
 def exportGraph(g, WC1, BC1, WC2, BC2, WC3, BC3, WF1, BF1, W_OUT, B_OUT):
     with g.as_default():
         #//x_2 = tf.placeholder("float", shape=[None, 784], name="input")
-        x_input = tf.placeholder("float", shape=[1, 28, 28, 1], name="inputImage")
+        x_input = tf.placeholder("float", shape=[None, 28, 28, 1], name="inputImage")
 
         WC1 = tf.constant(WC1, name="WC1")
         BC1 = tf.constant(BC1, name="BC1")
