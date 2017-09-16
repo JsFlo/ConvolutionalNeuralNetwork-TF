@@ -2,27 +2,8 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
 EXPORT_DIR = './model'
-
-weights = {
-    # 2x2 conv, 1 input, 64 outputs
-    'wc1': tf.Variable(tf.random_normal([2, 2, 1, 64])),
-    # 3x3 conv, 64 inputs, 64 outputs
-    'wc2': tf.Variable(tf.random_normal([3, 3, 64, 64])),
-    # 5 x 5 conv, 64 input, 10 output (through stride = 2)
-    'wc3': tf.Variable(tf.random_normal([5, 5, 64, 10])),
-    # fully connected, 11 * 11 * 10 inputs, 1024 outputs
-    'wf1': tf.Variable(tf.random_normal([11 * 11 * 10, 100])),
-    # 1024 inputs, 10 outputs (class prediction)
-    'out': tf.Variable(tf.random_normal([100, 10]))
-}
-
-biases = {
-    'bc1': tf.Variable(tf.random_normal([64])),
-    'bc2': tf.Variable(tf.random_normal([64])),
-    'bc3': tf.Variable(tf.random_normal([10])),
-    'bf1': tf.Variable(tf.random_normal([100])),
-    'bout': tf.Variable(tf.random_normal([10]))
-}
+TRAIN_STEPS = 20000
+PRINT_TRAIN_FREQ = 250
 
 
 def weight_variable(shape):
@@ -33,6 +14,28 @@ def weight_variable(shape):
 def bias_variable(shape):
     initial = tf.constant(0.1, shape=shape)
     return tf.Variable(initial)
+
+
+weights = {
+    # 2x2 conv, 1 input, 64 outputs
+    'wc1': weight_variable([2, 2, 1, 64]),
+    # 3x3 conv, 64 inputs, 64 outputs
+    'wc2': weight_variable([3, 3, 64, 64]),
+    # 5 x 5 conv, 64 input, 10 output (through stride = 2)
+    'wc3': weight_variable([5, 5, 64, 10]),
+    # fully connected, 11 * 11 * 10 inputs, 1024 outputs
+    'wf1': weight_variable([11 * 11 * 10, 100]),
+    # 1024 inputs, 10 outputs (class prediction)
+    'out': weight_variable([100, 10])
+}
+
+biases = {
+    'bc1': bias_variable([64]),
+    'bc2': bias_variable([64]),
+    'bc3': weight_variable([10]),
+    'bf1': weight_variable([100]),
+    'bout': weight_variable([10])
+}
 
 
 # Note this does not add zero-padding (padding = 'VALID') (padding = 'SAME' will output same dimension as lastLayer)
@@ -112,9 +115,9 @@ init = tf.initialize_all_variables()
 
 with tf.Session() as sess:
     sess.run(init)
-    for i in range(50):
+    for i in range(TRAIN_STEPS):
         batch = mnist.train.next_batch(50)
-        if i % 25 == 0:
+        if i % PRINT_TRAIN_FREQ == 0:
             printAccuracy(accuracy, i, x, yCorrectLabels, batch[0], batch[1], keep_prob)
 
         train_step.run(feed_dict={x: batch[0], yCorrectLabels: batch[1], keep_prob: 0.5})
