@@ -11,16 +11,16 @@ weights = {
     # 5 x 5 conv, 64 input, 10 output (through stride = 2)
     'wc3': tf.Variable(tf.random_normal([5, 5, 64, 10])),
     # fully connected, 11 * 11 * 10 inputs, 1024 outputs
-    'wf1': tf.Variable(tf.random_normal([11 * 11 * 10, 1024])),
+    'wf1': tf.Variable(tf.random_normal([11 * 11 * 10, 100])),
     # 1024 inputs, 10 outputs (class prediction)
-    'out': tf.Variable(tf.random_normal([1024, 10]))
+    'out': tf.Variable(tf.random_normal([100, 10]))
 }
 
 biases = {
     'bc1': tf.Variable(tf.random_normal([64])),
     'bc2': tf.Variable(tf.random_normal([64])),
     'bc3': tf.Variable(tf.random_normal([10])),
-    'bf1': tf.Variable(tf.random_normal([1024])),
+    'bf1': tf.Variable(tf.random_normal([100])),
     'bout': tf.Variable(tf.random_normal([10]))
 }
 
