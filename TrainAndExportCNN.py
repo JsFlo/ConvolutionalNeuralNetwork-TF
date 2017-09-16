@@ -1,10 +1,10 @@
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
-EXPORT_DIR = './model'
+EXPORT_DIR = './modelForImage'
 TRAIN_STEPS = 20000
 PRINT_TRAIN_FREQ = 250
-MODEL_NAME = 'model_graph.pb'
+MODEL_NAME = 'model_graph_28.pb'
 
 
 def weight_variable(shape):
@@ -70,12 +70,13 @@ def printShape(tensor):
 
 def exportGraph(g, WC1, BC1, WC2, BC2, WC3, BC3, WF1, BF1, W_OUT, B_OUT):
     with g.as_default():
-        x_2 = tf.placeholder("float", shape=[None, 784], name="input")
+        #//x_2 = tf.placeholder("float", shape=[None, 784], name="input")
+        x_input = tf.placeholder("float", shape=[1, 28, 28, 1], name="inputImage")
 
         WC1 = tf.constant(WC1, name="WC1")
         BC1 = tf.constant(BC1, name="BC1")
-        x_image2 = tf.reshape(x_2, [-1, 28, 28, 1])
-        CONV1 = getConvLayer(x_image2, WC1, BC1)
+        #x_image2 = tf.reshape(x_2, [-1, 28, 28, 1])
+        CONV1 = getConvLayer(x_input, WC1, BC1)
 
         WC2 = tf.constant(WC2, name="WC2")
         BC2 = tf.constant(BC2, name="BC2")
@@ -113,6 +114,7 @@ x = tf.placeholder(tf.float32, shape=[None, 784])
 # reshape 784 back to 28 by 28
 # [? , width, height, # color channels]
 x_image = tf.reshape(x, [-1, 28, 28, 1])
+printShape(x_image)
 
 # 10 hot vectors (0 - 9)
 yCorrectLabels = tf.placeholder(tf.float32, shape=[None, 10])
