@@ -84,7 +84,7 @@ def exportGraph(g, WC1, BC1, WC2, BC2, WC3, BC3, WF1, BF1, W_OUT, B_OUT):
 
         WC3 = tf.constant(WC3, name="WC3")
         BC3 = tf.constant(BC3, name="BC3")
-        CONV3 = getConvLayer(CONV2, WC3, BC3)
+        CONV3 = getConvLayer(CONV2, WC3, BC3, 2)
 
         CONV3_FLAT = tf.reshape(CONV3, [-1, 11 * 11 * 10])
 
